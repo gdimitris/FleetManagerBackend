@@ -7,12 +7,15 @@
     <script>
       var map;
       var locations = {{ location_points | safe() }} ;
+      var polylinePath = new Array();
 
       function initMap() {
           map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 37.9794500, lng: 23.7162200},
             zoom: 11
           });
+          createMarkers();
+          drawPolyline();
         }
 
         // Adds a marker to the map.
@@ -23,7 +26,9 @@
             map: map,
             title: location.phone_id
           });
+          polylinePath.push(loc);
           var contentStr = '<div>' + location.timestamp + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
+          addInfoWindow(marker, contentStr);
         }
 
         function createMarkers(){
@@ -31,7 +36,6 @@
                 addMarker(locations[i], map);
             }
         }
-
 
         function addInfoWindow(marker, contentStr){
             var infoWindow = new google.maps.InfoWindow({
@@ -42,9 +46,22 @@
             });
         }
 
-      window.onload = function() {
-        createMarkers();
-      };
+        function drawPolyline(){
+            var polypath = new google.maps.Polyline({
+                path: polylinePath,
+                geodesic: true,
+                strokeColor: '#0000FF',
+                strokeOpacity: 0.8,
+                strokeWeight: 2
+            });
+            polypath.setMap(map);
+        }
+
+
+      //window.onload = function() {
+      //  createMarkers();
+      //  drawPolyline();
+      //};
     </script>
 
 {% endblock%}
