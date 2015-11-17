@@ -1,9 +1,60 @@
 {% extends "base.html"%}
 
-{% block body%}
+{% block head %}
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKa5N63heYUWBRUVmGSuGCGB7lRX4i2oQ&callback=initMap" async defer></script>
+    <script>
+      var map;
+      var locations = {{ location_points | safe() }} ;
 
-<div>
-    Hello world!
-</div>
+      function initMap() {
+          map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 37.9794500, lng: 23.7162200},
+            zoom: 11
+          });
+        }
+
+        // Adds a marker to the map.
+        function addMarker(location, map) {
+          var loc = {lat: location.latitude, lng: location.longitude};
+          var marker = new google.maps.Marker({
+            position: loc,
+            map: map,
+            title: location.phone_id
+          });
+          var contentStr = '<div>' + location.timestamp + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
+        }
+
+        function createMarkers(){
+            for (var i=0; i< locations.length; i++){
+                addMarker(locations[i], map);
+            }
+        }
+
+
+        function addInfoWindow(marker, contentStr){
+            var infoWindow = new google.maps.InfoWindow({
+                content: contentStr
+            });
+            marker.addListener('click', function(){
+                infoWindow.open(map,marker);
+            });
+        }
+
+      window.onload = function() {
+        createMarkers();
+      };
+    </script>
+
+{% endblock%}
+
+{% block body%}
+    <style>
+      #map {
+        height: 100%;
+      }
+    </style>
+    <div id="map"></div>
 
 {% endblock%}
