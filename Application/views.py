@@ -14,9 +14,7 @@ def root():
 
 @app.route('/<device_id>', methods=['GET'])
 def show_device_locations(device_id):
-    locations = get_location_points_with_id(device_id)
-    ser_locations = [l.serialize for l in locations]
-    return render_template('index.html', location_points=json.dumps(ser_locations))
+    return render_template('index.html', device_id=device_id)
 
 
 @app.route('/<device_id>', methods=['POST'])
@@ -27,6 +25,12 @@ def add_entry(device_id):
     time = datetime.now().fromtimestamp(float(timestamp))
     insert_location_point_in_db(device_id, lat, lon, time)
     return render_template("empty.html"), 200
+
+
+@app.route('/json/<device_id>', methods=['GET'])
+def get_entries(device_id):
+    entries = get_entries_with_phone_id(device_id)
+    return jsonify(result=entries)
 
 
 def insert_location_point_in_db(device_id, latitude, longitude, timestamp):
@@ -47,3 +51,9 @@ def get_distinct_phone_ids_from_db():
 def get_location_points_with_id(phone_id):
     loc_points = LocationPoints.query.filter(LocationPoints.phone_id==phone_id).all()
     return loc_points
+
+
+def get_entries_with_phone_id(device_id):
+    locations = get_location_points_with_id(device_id)
+    serialized_locations = [i.serialize for i in locations]
+    return serialized_locations
