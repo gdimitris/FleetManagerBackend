@@ -20,12 +20,6 @@ class LocationPoints(db.Model):
     latitude = db.Column(db.Float(precision=7))
     longitude = db.Column(db.Float(precision=7))
 
-    # @property
-    # def serialize(self):
-    #     """Return object data in easily serializeable format"""
-    #     return dict(entry_id=self.entry_id, phone_id=self.phone_id, timestamp=self.timestamp, latitude=self.latitude,
-    #                 longitude=self.longitude)
-
     @property
     def serialize(self):
         return{

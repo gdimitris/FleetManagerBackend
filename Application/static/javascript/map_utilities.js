@@ -15,10 +15,12 @@ function addInfoWindow(marker, contentStr){
 // Adds a marker to the map.
 function addMarker(location, map) {
   var loc = {lat: location.latitude, lng: location.longitude};
+  var image = initMarkerImage();
   var marker = new google.maps.Marker({
     position: loc,
     map: map,
-    title: location.phone_id
+    title: location.phone_id,
+    icon:image
   });
   markers.push(marker);
   polylinePath.push(loc);
@@ -70,4 +72,15 @@ function setMapOnMarkers(map){
 function deleteMarkers(){
     hideMarkers();
     markers = [];
+}
+
+function initMarkerImage(){
+    var image = {
+        url: "./static/resources/marker.png",
+        scaledSize: new google.maps.Size(16,16),
+        origin: new google.maps.Point(0,0),
+        anchor: new google.maps.Point(8,16)
+    };
+
+    return image;
 }
