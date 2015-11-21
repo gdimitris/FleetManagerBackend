@@ -4,14 +4,19 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
 
-    <style>
-      #map {
-        height: 100%;
-      }
-    </style>
+    <link rel="stylesheet" href=" {{ url_for('static', filename='css/index.css') }}">
+
 {% endblock%}
 
 {% block body%}
+
+<div id="floating-panel">
+      <input onclick="hideMarkers();" type=button value="Hide Markers">
+      <input onclick="showMarkers(map);" type=button value="Show Markers">
+      <input onclick="deleteMarkers();" type=button value="Delete Markers">
+</div>
+
+<input id="pac-input" class="controls" type="text" placeholder="Search Box">
 
 <div id="map"></div>
 
@@ -24,10 +29,40 @@
         center: {lat: 37.9794500, lng: 23.7162200},
         zoom: 13
       });
+
+      // Create the search box and link it to the UI element.
+      var input = document.getElementById('pac-input');
+      var searchBox = new google.maps.places.SearchBox(input);
+      map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+      // Bias the SearchBox results towards current map's viewport.
+      map.addListener('bounds_changed', function() {
+        searchBox.setBounds(map.getBounds());
+      });
+
+      searchBox.addListener('places_changed', function(){
+        var places = searchBox.getPlaces();
+
+        if (places.length == 0){
+            return;
+        }
+
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach( function(place){
+            if (place.geometry.viewport){
+                bounds.union(place.geometry.viewport);
+            } else {
+                bounds.extend(place.geometry.location);
+            }
+        });
+        map.fitBounds(bounds);
+
+      });
+
       requestLocationsForDeviceID(device_id);
     }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKa5N63heYUWBRUVmGSuGCGB7lRX4i2oQ&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKa5N63heYUWBRUVmGSuGCGB7lRX4i2oQ&libraries=places&callback=initMap" async defer></script>
 <script src="{{ url_for('static',filename='javascript/map_utilities.js') }}"></script>
 
 {% endblock%}

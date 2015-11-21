@@ -1,6 +1,7 @@
 var response;
 var locations;
 var polylinePath = new Array();
+var markers = new Array();
 
 function addInfoWindow(marker, contentStr){
     var infoWindow = new google.maps.InfoWindow({
@@ -19,6 +20,7 @@ function addMarker(location, map) {
     map: map,
     title: location.phone_id
   });
+  markers.push(marker);
   polylinePath.push(loc);
   var contentStr = '<div>' + new Date(location.timestamp) + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
   addInfoWindow(marker, contentStr);
@@ -49,4 +51,23 @@ function drawPolyline(path,the_map){
         strokeWeight: 2
     });
     polypath.setMap(the_map);
+}
+
+function hideMarkers(){
+    setMapOnMarkers(null);
+}
+
+function showMarkers(the_map){
+    setMapOnMarkers(the_map);
+}
+
+function setMapOnMarkers(map){
+    for (var i=0; i < markers.length; i++){
+        markers[i].setMap(map);
+    }
+}
+
+function deleteMarkers(){
+    hideMarkers();
+    markers = [];
 }
