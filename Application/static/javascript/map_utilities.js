@@ -20,7 +20,7 @@ function addMarker(location, map) {
     title: location.phone_id
   });
   polylinePath.push(loc);
-  var contentStr = '<div>' + location.timestamp + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
+  var contentStr = '<div>' + new Date(location.timestamp) + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
   addInfoWindow(marker, contentStr);
 }
 
@@ -32,7 +32,6 @@ function addMarkersForLocationsInMap(point_locations,target_map){
 
 function requestLocationsForDeviceID(device_id){
     var request_url = "/json/"+device_id;
-    console.log(request_url);
     $.get(request_url, function (r){
         response = r;
         locations = response.result;
