@@ -2,17 +2,18 @@
 <html>
 <head lang="en">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- JQuery -->
-    <script type="text/javascript" src=" {{ url_for('static', filename='javascript/jquery-2.1.4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='javascript/jquery-2.1.4.min.js') }}"></script>
 
 
     <!-- Bootstrap 4 Alpha -->
-    <link rel="stylesheet" href=" {{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href=" {{ url_for('static', filename='css/bootstrap-theme.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}">
     <script type="text/javascript" src=" {{ url_for('static', filename='javascript/bootstrap.min.js') }}"></script>
 
     <!-- Application theme -->
-    <link rel="stylesheet" href=" {{ url_for('static', filename='css/global_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global_style.css') }}">
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     {% block head%}
@@ -20,19 +21,25 @@
 
 </head>
 <body>
+<nav class="navbar navbar-inverse navbar-static-top">
+    <a class="navbar-brand" href="#">Fleet Manager</a>
+</nav>
 
-<div class="container clearfix">
-    <div class="col-md-12">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        {% for message in messages %}
-        <p class="alert alert-danger col-md-12" role="alert"><b>Error: </b> {{ message }} </p>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+<div class="main-content">
+    <div class="container clearfix">
+        <div class="col-md-12">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <p class="alert alert-danger col-md-12" role="alert"><b>Error: </b> {{ message }} </p>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
     </div>
+    {% block body%}
+    {% endblock %}
 </div>
-{% block body%}
-{% endblock %}
+
 </body>
 </html>

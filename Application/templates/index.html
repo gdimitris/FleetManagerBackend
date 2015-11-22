@@ -4,22 +4,24 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
 
-    <link rel="stylesheet" href=" {{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 
 {% endblock%}
 
 {% block body%}
 
 <div id="floating-panel">
-      <input onclick="hideMarkers();" type=button value="Hide Markers">
-      <input onclick="showMarkers(map);" type=button value="Show Markers">
-      <input onclick="deleteMarkers();" type=button value="Delete Markers">
+        <button onclick="hideMarkers();" type="submit" class="btn btn-default">Hide Markers</button>
+        <button onclick="showMarkers(map);" type="submit" class="btn btn-default">Show Markers</button>
+        <button onclick="deleteMarkers();" type="submit" class="btn btn-default">Delete Markers</button>
 </div>
 
-<input id="pac-input" class="controls" type="text" placeholder="Search Box">
-
-<div id="map"></div>
-
+<div class="row">
+    <div class="col-md-12" id="map-container">
+        <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+        <div id="map"></div>
+    </div>
+</div>
 <script>
     var map;
     var device_id = '{{ device_id | safe()}}';
