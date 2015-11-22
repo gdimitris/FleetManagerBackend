@@ -15,7 +15,7 @@ def root():
     return render_template('users.html', phone_ids=result_list, researchers=researchers)
 
 
-@cache.cached(timeout=1000)
+#@cache.cached(timeout=1000)
 @app.route('/<device_id>', methods=['GET'])
 def show_device_locations(device_id):
     return render_template('index.html', device_id=device_id)
@@ -71,7 +71,7 @@ def get_all_researchers_from_db():
     return result
 
 
-@cache.cached(timeout=1000)
+#@cache.cached(timeout=1000)
 def get_distinct_phone_ids_from_db():
     res = db.session.query(LocationPoints).distinct(LocationPoints.phone_id).group_by(LocationPoints.phone_id)
     result_list = list()
@@ -80,13 +80,13 @@ def get_distinct_phone_ids_from_db():
     return result_list
 
 
-@cache.cached(timeout=1000)
+#@cache.cached(timeout=1000)
 def get_location_points_with_id(phone_id):
     loc_points = LocationPoints.query.filter(LocationPoints.phone_id == phone_id).all()
     return loc_points
 
 
-@cache.cached(timeout=1000)
+#@cache.cached(timeout=1000)
 def get_entries_with_phone_id(device_id):
     locations = get_location_points_with_id(device_id)
     serialized_locations = [i.serialize for i in locations]
