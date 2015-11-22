@@ -3,12 +3,12 @@ __author__ = 'dimitris'
 from Application import db
 
 
-# class Users(db.Model):
-#     __tablename__ = 'Users'
-#
-#     phone_id = db.Column(db.String(80), nullable=False, primary_key=True)
-#     name = db.Column(db.String(80), nullable=False)
-#     surname = db.Column(db.String(80), nullable=False)
+class Researchers(db.Model):
+    __tablename__ = 'Researchers'
+
+    phone_id = db.Column(db.String(80), nullable=False, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    surname = db.Column(db.String(80), nullable=False)
 
 
 class LocationPoints(db.Model):
