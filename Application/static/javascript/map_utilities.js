@@ -24,7 +24,7 @@ function addMarker(location, map) {
   });
   markers.push(marker);
   polylinePath.push(loc);
-  var contentStr = '<div>' + new Date(location.timestamp) + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
+  var contentStr = '<div>' + location.timestamp + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
   addInfoWindow(marker, contentStr);
 }
 

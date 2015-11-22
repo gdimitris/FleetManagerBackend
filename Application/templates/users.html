@@ -2,20 +2,45 @@
 
 {% block body%}
 
-<h3> Researchers </h3>
-{% if researchers %}
-    {%for researcher in researchers:%}
-        <p> <a href=" {{ url_for('show_device_locations', device_id=researcher.phone_id) }}"> {{researcher.name}} {{researcher.surname}}</a> </p>
-    {% endfor %}
+{% if researchers: %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Researchers</div>
+        <table class="table table-striped">
+            <thead>
+                <th>Device ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </thead>
+            <tbody>
+                {% for researcher in researchers: %}
+                    <tr>
+                        <td> <a href="{{ url_for('show_device_locations', device_id=researcher.phone_id) }}">  {{ researcher.phone_id }}  </a> </td>
+                        <td> {{ researcher.name }}</td>
+                        <td> {{ researcher.surname }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endif %}
 
+{% if phone_ids: %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Device IDs</div>
+        <table class="table table-striped">
+            <thead>
+                <th>Device ID</th>
+            </thead>
+            <tbody>
+                {% for phone_id in phone_ids: %}
+                    <tr>
+                        <td><a href="{{ url_for('show_device_locations',device_id=phone_id)}}"> {{ phone_id }}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-<h3> Device IDs</h3>
-
-{% if phone_ids %}
-    {%for phone_id in phone_ids:%}
-       <p> <a href="{{ url_for('show_device_locations',device_id=phone_id)}}"> {{ phone_id }}</a></p>
-    {%endfor%}
+    </div>
 {% endif %}
 
 {% endblock %}

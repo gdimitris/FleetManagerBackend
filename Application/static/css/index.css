@@ -1,14 +1,21 @@
-#map {
+.main-content{
+    padding: 0px;
+}
+
+.navbar{
+    margin-bottom: 1px;
+}
+
+.row , .col-md-12, #map {
     height: 100%;
 }
 
-
 #floating-panel {
-    width: 150px;
-    height: 160px;
+    width: 450px;
+    height: 60px;
     position: absolute;
-    top: 80px;
-    left: 1%;
+    top: 60px;
+    right: 1%;
     z-index: 5;
     padding: 5px;
     text-align: center;
