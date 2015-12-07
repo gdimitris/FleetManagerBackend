@@ -10,6 +10,10 @@
     height: 100%;
 }
 
+#datetimepicker6, #datetimepicker7 {
+    width: 300px;
+}
+
 #floating-panel {
     width: 450px;
     height: 60px;
@@ -22,6 +26,10 @@
     font-family: 'Roboto','sans-serif';
     line-height: 30px;
     padding-left: 10px;
+}
+
+#barContainer {
+    z-index: 5;
 }
 
 input{
