@@ -2,8 +2,11 @@ var response;
 var locations;
 var polylinePath = new Array();
 var markers = new Array();
+var bar = document.getElementById('locations-bar');
+var barContainer = document.getElementById('barContainer')
 
-function addInfoWindow(marker, contentStr){
+function addInfoWindow(marker, location){
+    var contentStr = '<div>' + new Date(location.timestamp) + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
     var infoWindow = new google.maps.InfoWindow({
         content: contentStr
     });
@@ -24,23 +27,38 @@ function addMarker(location, map) {
   });
   markers.push(marker);
   polylinePath.push(loc);
-  var contentStr = '<div>' + new Date(location.timestamp) + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
-  addInfoWindow(marker, contentStr);
+  addInfoWindow(marker, location);
 }
 
-function addMarkersForLocationsInMap(point_locations,target_map){
-    for (var i=0; i< point_locations.length; i++){
+function addMarkersForLocationsInMap(point_locations,target_map, start_range, end_range){
+
+    for (var i=start_range; i< end_range; i++){
         addMarker(point_locations[i], target_map);
     }
+    updateProgressBar();
+}
+
+function updateProgressBar(){
+    var w = parseInt(bar.style.width);
+    w += 1;
+    bar.style.width = w + "%";
+    bar.textContent = w + "%";
+    if (w > 99) {
+        hideProgressBar();
+    }
+}
+
+function hideProgressBar(){
+    barContainer.style.visibility = "hidden";
 }
 
 function requestLocationsForDeviceID(device_id){
     var request_url = "/json/"+device_id;
-    $.get(request_url, function (r){
-        response = r;
+    $.get(request_url, function (response){
         locations = response.result;
-        addMarkersForLocationsInMap(locations,map);
-        drawPolyline(polylinePath,map)
+        console.log('Total locations: '+locations.length)
+        createPartitionsForArray(locations, map)
+        $.queue.add(partial(drawPolyline, polylinePath, map));
     });
 }
 
