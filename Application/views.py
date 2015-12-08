@@ -4,8 +4,9 @@ __author__ = 'dimitris'
 
 from Application import app, db, cache
 from flask import render_template, request, flash, jsonify, json
-from datetime import datetime
+from datetime import datetime, timedelta
 from models import LocationPoints, Researchers
+from sqlalchemy.sql.expression import and_
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -34,6 +35,14 @@ def add_entry(device_id):
 @app.route('/json/<device_id>', methods=['GET'])
 def get_entries(device_id):
     entries = get_entries_with_phone_id(device_id)
+    return jsonify(result=entries)
+
+
+@app.route('/json/<device_id>/filtered', methods=['GET'])
+def get_filtered_entries(device_id):
+    start_unix_time = request.args.get('start')
+    end_unix_time = request.args.get('end')
+    entries = get_filtered_entries_from_db(device_id, start_unix_time, end_unix_time)
     return jsonify(result=entries)
 
 
@@ -71,7 +80,6 @@ def get_all_researchers_from_db():
     return result
 
 
-#@cache.cached(timeout=1000)
 def get_distinct_phone_ids_from_db():
     res = db.session.query(LocationPoints).distinct(LocationPoints.phone_id).group_by(LocationPoints.phone_id)
     result_list = list()
@@ -80,14 +88,23 @@ def get_distinct_phone_ids_from_db():
     return result_list
 
 
-#@cache.cached(timeout=1000)
 def get_location_points_with_id(phone_id):
     loc_points = LocationPoints.query.filter(LocationPoints.phone_id == phone_id).all()
     return loc_points
 
 
-#@cache.cached(timeout=1000)
 def get_entries_with_phone_id(device_id):
     locations = get_location_points_with_id(device_id)
+    serialized_locations = [i.serialize for i in locations]
+    return serialized_locations
+
+
+def get_filtered_entries_from_db(device_id, start_unix_time, end_unix_time):
+    start_time = datetime.now().fromtimestamp(float(start_unix_time))
+    end_time = datetime.now().fromtimestamp(float(end_unix_time))
+    query = and_(LocationPoints.timestamp >= start_time,
+                 LocationPoints.timestamp < end_time,
+                 LocationPoints.phone_id == device_id)
+    locations = LocationPoints.query.filter(query).all()
     serialized_locations = [i.serialize for i in locations]
     return serialized_locations

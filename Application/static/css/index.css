@@ -10,7 +10,7 @@
     height: 100%;
 }
 
-#datetimepicker6, #datetimepicker7 {
+#start_picker, #end_picker {
     width: 300px;
 }
 

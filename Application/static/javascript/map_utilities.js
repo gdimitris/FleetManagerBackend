@@ -1,5 +1,6 @@
 var response;
 var locations;
+var polypath;
 var polylinePath = new Array();
 var markers = new Array();
 var bar = document.getElementById('locations-bar');
@@ -52,18 +53,23 @@ function hideProgressBar(){
     barContainer.style.visibility = "hidden";
 }
 
+function showProgressBar(){
+    barContainer.style.visibility = "visible";
+}
+
 function requestLocationsForDeviceID(device_id){
     var request_url = "/json/"+device_id;
     $.get(request_url, function (response){
         locations = response.result;
         console.log('Total locations: '+locations.length)
+        showProgressBar();
         createPartitionsForArray(locations, map)
         $.queue.add(partial(drawPolyline, polylinePath, map));
     });
 }
 
 function drawPolyline(path,the_map){
-    var polypath = new google.maps.Polyline({
+    polypath = new google.maps.Polyline({
         path: path,
         geodesic: true,
         strokeColor: '#0000FF',
@@ -92,6 +98,15 @@ function deleteMarkers(){
     markers = [];
 }
 
+function deletePath(){
+
+    if(polypath){
+        polypath.setMap(null);
+        polypath = null;
+    }
+    polylinePath = [];
+}
+
 function initMarkerImage(){
     var image = {
         url: "./static/resources/marker.png",
@@ -101,4 +116,29 @@ function initMarkerImage(){
     };
 
     return image;
+}
+
+function clearAll(){
+    deleteMarkers();
+    deletePath();
+}
+
+function filterResults(deviceID){
+    clearAll();
+    console.log("Requested filter for deviceID:" + deviceID);
+    var start_unix = $('#start_picker').data("DateTimePicker").date().unix();
+    var end_unix = $('#end_picker').data("DateTimePicker").date().unix();
+    filterDeviceIDWithTime(deviceID,start_unix,end_unix)
+}
+
+function filterDeviceIDWithTime(device_id,start_unix,end_unix){
+    var request_url = "/json/"+device_id+"/filtered?start="+start_unix+"&end="+end_unix;
+    console.log("request url: "+request_url);
+    $.get(request_url, function (response){
+        locations = response.result;
+        console.log('Total locations: '+locations.length)
+        showProgressBar();
+        createPartitionsForArray(locations, map)
+        $.queue.add(partial(drawPolyline, polylinePath, map));
+    });
 }
