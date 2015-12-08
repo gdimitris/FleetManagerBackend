@@ -9,7 +9,6 @@ PREFERRED_URL_SCHEME = 'https'
 
 #SqlAlchemy Configuration
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'fleet_manager.db')
-print(SQLALCHEMY_DATABASE_URI)
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
