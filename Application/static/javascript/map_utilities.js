@@ -63,7 +63,7 @@ function requestLocationsForDeviceID(device_id){
         console.log('Total locations: '+locations.length)
         showProgressBar();
         createPartitionsForArray(locations, map)
-        $.queue.add(partial(drawPolyline, polylinePath, map));
+        $.long_running_queue.add(partial(drawPolyline, polylinePath, map));
     });
 }
 
@@ -137,7 +137,7 @@ function filterDeviceIDWithTime(device_id,start_unix,end_unix){
         console.log('Total locations: '+locations.length)
         showProgressBar();
         createPartitionsForArray(locations, map)
-        $.queue.add(partial(drawPolyline, polylinePath, map));
+        $.long_running_queue.add(partial(drawPolyline, polylinePath, map));
     });
 }
 
