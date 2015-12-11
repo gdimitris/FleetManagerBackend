@@ -7,7 +7,7 @@ var bar = document.getElementById('locations-bar');
 var barContainer = document.getElementById('barContainer')
 
 function addInfoWindow(marker, location){
-    var contentStr = '<div>' + new Date(location.timestamp) + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
+    var contentStr = '<div>' + location.timestamp + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
     var infoWindow = new google.maps.InfoWindow({
         content: contentStr
     });
@@ -32,8 +32,7 @@ function addMarker(location, map) {
 }
 
 function addMarkersForLocationsInMap(point_locations,target_map, start_range, end_range){
-
-    for (var i=start_range; i< end_range; i++){
+    for (var i=start_range; i< end_range; i++) {
         addMarker(point_locations[i], target_map);
     }
     updateProgressBar();
@@ -99,7 +98,6 @@ function deleteMarkers(){
 }
 
 function deletePath(){
-
     if(polypath){
         polypath.setMap(null);
         polypath = null;
@@ -142,3 +140,4 @@ function filterDeviceIDWithTime(device_id,start_unix,end_unix){
         $.queue.add(partial(drawPolyline, polylinePath, map));
     });
 }
+
