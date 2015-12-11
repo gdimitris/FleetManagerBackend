@@ -42,7 +42,7 @@ function updateProgressBar(){
     var w = parseInt(bar.style.width);
     w += 1;
     bar.style.width = w + "%";
-    bar.textContent = w + "%";
+//    bar.textContent = w + "%";
     if (w > 99) {
         hideProgressBar();
     }
