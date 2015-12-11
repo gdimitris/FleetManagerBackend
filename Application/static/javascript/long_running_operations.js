@@ -1,25 +1,25 @@
-$.queue = {
+$.long_running_queue = {
     _timer: null,
     _queue: [],
     add: function(fn, context, time) {
         var setTimer = function(time) {
-            $.queue._timer = setTimeout(function() {
-                time = $.queue.add();
-                if ($.queue._queue.length) {
+            $.long_running_queue._timer = setTimeout(function() {
+                time = $.long_running_queue.add();
+                if ($.long_running_queue._queue.length) {
                     setTimer(time);
                 }
             }, time || 150);
         }
 
         if (fn) {
-            $.queue._queue.push([fn, context, time]);
-            if ($.queue._queue.length == 1) {
+            $.long_running_queue._queue.push([fn, context, time]);
+            if ($.long_running_queue._queue.length == 1) {
                 setTimer(time);
             }
             return;
         }
 
-        var next = $.queue._queue.shift();
+        var next = $.long_running_queue._queue.shift();
         if (!next) {
             return 0;
         }
@@ -27,8 +27,8 @@ $.queue = {
         return next[2];
     },
     clear: function() {
-        clearTimeout($.queue._timer);
-        $.queue._queue = [];
+        clearTimeout($.long_running_queue._timer);
+        $.long_running_queue._queue = [];
     }
 };
 
@@ -38,7 +38,7 @@ function createPartitionsForArray(array,map){
 
     if (arLength < 300){
        var callback = partial(addMarkersForLocationsInMap, array, map ,0,arLength-1);
-       $.queue.add(callback);
+       $.long_running_queue.add(callback);
        hideProgressBar();
        return;
     }
@@ -50,12 +50,12 @@ function createPartitionsForArray(array,map){
         var start_index = cur_step * step;
         var end_index = (cur_step + 1) * step;
         var callback = partial(addMarkersForLocationsInMap, array, map ,start_index,end_index);
-        $.queue.add(callback)
+        $.long_running_queue.add(callback)
     }
     var rem_start_index  = partitions * step;
     var rem_end_index = rem_start_index + remainder;
     var callback = partial(addMarkersForLocationsInMap, array, map ,rem_start_index,rem_end_index);
-    $.queue.add(callback)
+    $.long_running_queue.add(callback)
 }
 
 function doPartition(array,start_range,end_range){
