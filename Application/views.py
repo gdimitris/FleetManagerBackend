@@ -3,10 +3,17 @@ from logging import Logger
 __author__ = 'dimitris'
 
 from Application import app, db, cache
-from flask import render_template, request, flash, jsonify, json
+from flask import render_template, request, flash, jsonify, json, send_from_directory
 from datetime import datetime, timedelta
 from models import LocationPoints, Researchers
 from sqlalchemy.sql.expression import and_
+import os
+
+
+@app.route('/content/current_version.apk', methods=['GET'])
+def get_apk():
+    return send_from_directory(os.path.join(app.root_path, 'static/resources'), 'app-working.apk',
+                               mimetype='application/vnd.android.package-archive')
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -16,7 +23,6 @@ def root():
     return render_template('users.html', phone_ids=result_list, researchers=researchers)
 
 
-#@cache.cached(timeout=1000)
 @app.route('/<device_id>', methods=['GET'])
 def show_device_locations(device_id):
     return render_template('index.html', device_id=device_id)

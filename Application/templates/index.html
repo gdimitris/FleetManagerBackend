@@ -6,46 +6,59 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 
-
 {% endblock%}
 
 {% block body%}
 
-<div id="floating-panel">
-        <div class="row progress" id="barContainer" style="height: 15px; margin-top:0;">
-          <div id="locations-bar" class="progress-bar progress-bar-default progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
-        </div>
+<!--<div class="container collapse-group">-->
+    <!--<div class="collapse" id="floating-panel">-->
+        <!--<div class="collapse row progress" id="barContainer" style="height: 15px; margin-top:0;">-->
+          <!--<div id="locations-bar" class="progress-bar progress-bar-default progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>-->
+        <!--</div>-->
 
-        <button onclick="hideMarkers();" type="submit" class="btn btn-default">Hide Markers</button>
-        <button onclick="showMarkers(map);" type="submit" class="btn btn-default">Show Markers</button>
-        <button onclick="deleteMarkers();" type="submit" class="btn btn-default">Delete Markers</button>
+        <!--<div class="row">-->
+            <!--<button onclick="hideMarkers();" type="submit" class="btn btn-default col-md-4">Hide Markers</button>-->
+            <!--<button onclick="showMarkers(map);" type="submit" class="btn btn-default col-md-4">Show Markers</button>-->
+            <!--<button onclick="deleteMarkers();" type="submit" class="btn btn-default col-md-4">Delete Markers</button>-->
+        <!--</div>-->
 
-        <div class="container">
+            <!--<div class="row">-->
+                <!--<div class="col-md-6">-->
+                    <!--<div class='input-group date' id='start_picker'>-->
+                        <!--<input type='text' class="form-control" />-->
+                        <!--<span class="input-group-addon">-->
+                            <!--<span class="glyphicon glyphicon-calendar"></span>-->
+                        <!--</span>-->
+                    <!--</div>-->
+                <!--</div>-->
 
-                <div class="form-group">
-                    <div class='input-group date' id='start_picker'>
-                        <input type='text' class="form-control" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
-                </div>
+
+                <!--<div class="col-md-6">-->
+                    <!--<div class='input-group date' id='end_picker'>-->
+                        <!--<input type='text' class="form-control" />-->
+                        <!--<span class="input-group-addon">-->
+                            <!--<span class="glyphicon glyphicon-calendar"></span>-->
+                        <!--</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<button onclick="filterResults('{{ device_id | safe()}}');" type="submit" class="btn btn-default collapse">Filter</button>-->
+        <!--</div>-->
 
 
-                <div class="form-group">
-                    <div class='input-group date' id='end_picker'>
-                        <input type='text' class="form-control" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
-                </div>
-        </div>
+<!--</div>-->
+<!--</div>-->
 
-        <button onclick="filterResults('{{ device_id | safe()}}');" type="submit" class="btn btn-default">Filter</button>
+<div class="panel panel-group" id="floating-panel">
+    <div class="panel panel-parent" id="collapse-all">
+        <button onclick="hideMarkers();" type="submit" class="btn btn-default col-md-4">Hide Markers</button>
+        <button onclick="showMarkers(map);" type="submit" class="btn btn-default col-md-4">Show Markers</button>
+        <button onclick="deleteMarkers();" type="submit" class="btn btn-default col-md-4">Delete Markers</button>
+    </div>
+
 </div>
 
-
+<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#floating-panel" aria-expanded="false" aria-controls="floating-panel"><span class="glyphicon glyphicon-chevron-right"></span></button>
 
 <div class="row">
     <div class="col-md-12" id="map-container">
@@ -53,6 +66,10 @@
         <div id="map"></div>
     </div>
 </div>
+
+<!--<script src="{{ url_for('static',filename='javascript/long_running_operations.js')}}"></script>-->
+<script src="{{ url_for('static',filename='javascript/map_utilities.js') }}"></script>
+
 <script>
     var map;
     var device_id = '{{ device_id | safe()}}';
@@ -109,9 +126,10 @@
             $('#start_picker').data("DateTimePicker").maxDate(e.date);
         });
     });
+
+
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKa5N63heYUWBRUVmGSuGCGB7lRX4i2oQ&libraries=places&callback=initMap" async defer></script>
-<script src="{{ url_for('static',filename='javascript/long_running_operations.js')}}"></script>
-<script src="{{ url_for('static',filename='javascript/map_utilities.js') }}"></script>
+
 
 {% endblock%}

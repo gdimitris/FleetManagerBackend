@@ -3,7 +3,7 @@
 }
 
 .navbar{
-    margin-bottom: 1px;
+    margin-bottom: 0px;
 }
 
 .row , .col-md-12, #map {
@@ -15,17 +15,22 @@
 }
 
 #floating-panel {
-    width: 450px;
-    height: 60px;
+    width: 480px;
+    height: 220px;
     position: absolute;
     top: 60px;
     right: 1%;
     z-index: 5;
-    padding: 5px;
     text-align: center;
     font-family: 'Roboto','sans-serif';
     line-height: 30px;
     padding-left: 10px;
+    background: #2a3542;
+    display: block;
+}
+
+#panel-toggle {
+    top: 130px;
 }
 
 #barContainer {
