@@ -3,8 +3,8 @@ from logging import Logger
 __author__ = 'dimitris'
 
 from Application import app, db, cache
-from flask import render_template, request, flash, jsonify, json, send_from_directory
-from datetime import datetime, timedelta
+from flask import render_template, request, jsonify, send_from_directory, url_for
+from datetime import datetime
 from models import LocationPoints, Researchers
 from sqlalchemy.sql.expression import and_
 import os
@@ -14,6 +14,14 @@ import os
 def get_apk():
     return send_from_directory(os.path.join(app.root_path, 'static/resources'), 'app-working.apk',
                                mimetype='application/vnd.android.package-archive')
+
+
+@app.route('/json/current_apk_version', methods=['GET'])
+def get_version():
+    text_file = open('static/resources/current_apk_version.txt')
+    version = text_file.readline()
+    apk_url = url_for('get_apk', _external=True)
+    return jsonify(version=version, url=apk_url)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -114,3 +122,7 @@ def get_filtered_entries_from_db(device_id, start_unix_time, end_unix_time):
     locations = LocationPoints.query.filter(query).all()
     serialized_locations = [i.serialize for i in locations]
     return serialized_locations
+
+
+if __name__ == '__main__':
+    app.run()
