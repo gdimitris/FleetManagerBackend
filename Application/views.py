@@ -95,7 +95,7 @@ def get_all_researchers_from_db():
 
 
 def get_distinct_phone_ids_from_db():
-    res = db.session.query(LocationPoints).distinct(LocationPoints.phone_id).group_by(LocationPoints.phone_id)
+    res = db.session.query(LocationPoints).distinct(LocationPoints.phone_id)#.group_by(LocationPoints.phone_id)
     result_list = list()
     for val in res:
         result_list.append(val.phone_id)
