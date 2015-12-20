@@ -21,10 +21,10 @@ username = env_username if env_username else "fleet"
 password = env_password if env_password else "mitsos123!"
 driver_string = "DRIVER={SQL Server Native Client 10.0};SERVER=%s;DATABASE=%s;UID=%s;PWD=%s" % (db_server, database, username, password)
 params = urllib.quote_plus(driver_string)
-#SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'fleet_manager.db')
-SQLALCHEMY_DATABASE_URI = "mssql+pyodbc:///?odbc_connect=%s" % params
-SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
-SQLALCHEMY_TRACK_MODIFICATIONS = True
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'fleet_manager.db')
+# SQLALCHEMY_DATABASE_URI = "mssql+pyodbc:///?odbc_connect=%s" % params
+# SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+# SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
 #Cache Configuration
