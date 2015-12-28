@@ -9,6 +9,7 @@ class Researchers(db.Model):
     phone_id = db.Column(db.String(80), nullable=False, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     surname = db.Column(db.String(80), nullable=False)
+    last_updated = db.Column(db.DateTime)
 
 
 class LocationPoints(db.Model):
