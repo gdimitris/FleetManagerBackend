@@ -141,3 +141,32 @@ function filterDeviceIDWithTime(device_id,start_unix,end_unix){
     });
 }
 
+function moveToLocation(lat, lng){
+    var center = new google.maps.LatLng(lat, lng);
+    map.panTo(center);
+    map.setZoom(21);
+}
+
+function changeLastMarker(){
+    var image = {
+        url: "./static/resources/highlighted_marker.png",
+        scaledSize: new google.maps.Size(16,16),
+        origin: new google.maps.Point(0,0),
+        anchor: new google.maps.Point(8,16)
+    };
+    var marker = markers[markers.length-1];
+    marker.setMap(null);
+    marker.icon = image;
+    marker.setMap(map);
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function(){ marker.setAnimation(null); }, 750);
+}
+
+function highlightLastMarker(){
+    if(locations.length == 0)
+        return;
+
+    var last_location = locations[locations.length - 1];
+    moveToLocation(last_location.latitude, last_location.longitude);
+    changeLastMarker();
+}
