@@ -43,6 +43,7 @@ def add_entry(device_id):
     timestamp = request.args.get('time')
     time = datetime.now().fromtimestamp(float(timestamp))
     insert_location_point_in_db(device_id, lat, lon, time)
+    update_researcher_timestamp(device_id, time)
     return render_template("empty.html"), 200
 
 
@@ -66,6 +67,12 @@ def register_researcher(device_id):
     surname = request.args.get('surname')
     insert_or_update_existing_researcher(device_id, name, surname)
     return render_template("empty.html"), 200
+
+
+def update_researcher_timestamp(device_id, time):
+    researcher = Researchers.query.filter(Researchers.phone_id == device_id).first()
+    researcher.last_updated = time
+    commit_and_flush(researcher)
 
 
 def insert_location_point_in_db(device_id, latitude, longitude, timestamp):
