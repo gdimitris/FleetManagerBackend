@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+
+{% endblock %}
+
+{% block body %}
+
+    {% for location in res: %}
+        <p> {{ location.entry_id }} {{ location.phone_id }} {{ location.timestamp }}</p>
+    {% endfor%}
+
+{% endblock %}

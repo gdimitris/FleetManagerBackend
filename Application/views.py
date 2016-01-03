@@ -2,11 +2,12 @@ from logging import Logger
 
 __author__ = 'dimitris'
 
-from Application import app, db, cache
+from Application import app, db
 from flask import render_template, request, jsonify, send_from_directory, url_for
 from datetime import datetime
 from models import LocationPoints, Researchers
 from sqlalchemy.sql.expression import and_
+from sqlalchemy import text
 import os
 
 
@@ -69,6 +70,16 @@ def register_researcher(device_id):
     return render_template("empty.html"), 200
 
 
+@app.route('/multiselect_users', methods=['POST'])
+def multiselect_users():
+    selected = request.form.getlist('check')
+    print str(selected)
+    q = LocationPoints.phone_id.in_(selected)
+    print q
+    res = LocationPoints.query.filter(q).all()
+    return render_template("multiple_users.html", res=res)
+
+
 def update_researcher_timestamp(device_id, time):
     researcher = Researchers.query.filter(Researchers.phone_id == device_id).first()
     researcher.last_updated = time
@@ -102,7 +113,7 @@ def get_all_researchers_from_db():
 
 
 def get_distinct_phone_ids_from_db():
-    res = db.session.query(LocationPoints).distinct(LocationPoints.phone_id)#.group_by(LocationPoints.phone_id)
+    res = db.session.query(LocationPoints).distinct(LocationPoints.phone_id)
     result_list = list()
     for val in res:
         result_list.append(val.phone_id)

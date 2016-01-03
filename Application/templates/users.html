@@ -1,49 +1,95 @@
 {% extends "base.html"%}
 
 {% block head %}
+
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/dataTables.bootstrap.min.css">
-
 
 {% endblock %}
 
 {% block body%}
 
 {% if researchers: %}
+<form id="user-form" method="post" action="/multiselect_users">
+<div class="row" style="margin-bottom:5px;">
+    <p class="col-md-2" id="user-form-text"> </p><button id="users-form-button" onclick="clear_search();" class="btn btn-default col-md-1" style="height:35px;" disabled>Submit</button>
+</div>
     <div class="panel panel-default">
-        <div class="panel-heading">Researchers</div>
-        <table class="table table-striped" id="user-table">
-            <thead>
-                <th>Device ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Last Updated</th>
-            </thead>
-            <tbody>
-                {% for researcher in researchers: %}
-                    <tr>
-                        <td> <a href="{{ url_for('show_device_locations', device_id=researcher.phone_id) }}">  {{ researcher.phone_id }}  </a> </td>
-                        <td> {{ researcher.name }}</td>
-                        <td> {{ researcher.surname }}</td>
-                        {% if researcher.last_updated: %}
-                            <td> <script> document.write(moment('{{ researcher.last_updated}}').fromNow()); </script> </td>
-                        {% else: %}
-                            <td> {{researcher.last_updated}} </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="panel-heading"><b>Researchers</b></div>
+            <table class="table table-striped" id="user-table">
+                <thead>
+                    <th>Selected</th>
+                    <th>Device ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Last Updated</th>
+                </thead>
+                <tbody>
+                    {% for researcher in researchers: %}
+                        <tr>
+                            <td> <input type="checkbox" name="check" value="{{researcher.phone_id}}" onclick="count_selected(this);"></td>
+                            <td> <a href="{{ url_for('show_device_locations', device_id=researcher.phone_id) }}">  {{ researcher.phone_id }}  </a> </td>
+                            <td> {{ researcher.name }}</td>
+                            <td> {{ researcher.surname }}</td>
+                            {% if researcher.last_updated: %}
+                                <td> <script> document.write(moment('{{ researcher.last_updated}}').fromNow()); </script> </td>
+                            {% else: %}
+                                <td> {{researcher.last_updated}} </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
     </div>
+</form>
 {% endif %}
 
 <script type="text/javascript">
+    var user_table;
+    $(function(){
+        user_table = $('#user-table').DataTable(
+             {
+                "aoColumnDefs": [
+                  { "bSortable": false, "aTargets": [ 0 ] }
+                ]
+             }
+        );
+    });
 
-$(function(){
-    $('#user-table').DataTable();
-});
+</script>
 
+<script>
+function clear_search(){
+    console.log("Clear was called");
+    $('input.form-control').val('');
+    user_table.search( '' ).columns().search( '' ).draw();
+    $('#user-form').submit()
+}
+</script>
+
+<script>
+    var selected_checkboxes=0;
+    function count_selected(checkbox){
+        if(checkbox.checked)
+            selected_checkboxes++;
+        else
+            selected_checkboxes--;
+        toggleButton();
+        updateText();
+    }
+
+    function toggleButton(){
+        if(selected_checkboxes<1)
+            $('#users-form-button').prop('disabled', true);
+        else
+            $('#users-form-button').prop('disabled', false);
+    }
+
+    function updateText(){
+        $('#user-form-text').html("You have selected "+selected_checkboxes+" users");
+    }
+    updateText();
 </script>
 
 {% endblock %}
