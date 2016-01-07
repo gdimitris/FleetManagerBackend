@@ -1,14 +1,36 @@
-from logging import Logger
+import os
+from datetime import datetime
 
-__author__ = 'dimitris'
+from flask import render_template, request, jsonify, send_from_directory, url_for
 
 from Application import app, db
-from flask import render_template, request, jsonify, send_from_directory, url_for
-from datetime import datetime
-from models import LocationPoints, Researchers
-from sqlalchemy.sql.expression import and_
-from sqlalchemy import text
-import os
+from Application.db_operations import update_researcher_timestamp, insert_location_point_in_db, \
+    insert_or_update_existing_researcher, get_all_researchers_from_db, get_entries_with_phone_id, \
+    get_filtered_entries_from_db, get_locations_for_phone_ids
+
+
+@app.errorhandler(404)
+def not_found(error):
+    message = "Page not found: %s \n Reason: %s" % (request.path, error)
+    app.logger.error(str(message))
+    return render_template('error.html', message=message), 404
+
+
+@app.errorhandler(500)
+@app.errorhandler(502)
+def internal_error(error):
+    db.session.rollback()
+    message = "Internal server error: %s" % error
+    app.logger.error(message)
+    return render_template('error.html', message=message), 500
+
+
+@app.errorhandler(Exception)
+def unhandled_exception(e):
+    db.session.rollback()
+    message = "Unhandled exception: %s" % e
+    app.logger.error(message)
+    return render_template('error.html', message), 500
 
 
 @app.route('/content/current_version.apk', methods=['GET'])
@@ -27,9 +49,8 @@ def get_version():
 
 @app.route('/', methods=['GET', 'POST'])
 def root():
-    result_list = get_distinct_phone_ids_from_db()
     researchers = get_all_researchers_from_db()
-    return render_template('users.html', phone_ids=result_list, researchers=researchers)
+    return render_template('users.html', researchers=researchers)
 
 
 @app.route('/<device_id>', methods=['GET'])
@@ -73,73 +94,9 @@ def register_researcher(device_id):
 @app.route('/multiselect_users', methods=['POST'])
 def multiselect_users():
     selected = request.form.getlist('check')
-    print str(selected)
-    q = LocationPoints.phone_id.in_(selected)
-    print q
-    res = LocationPoints.query.filter(q).all()
+    print selected
+    res = get_locations_for_phone_ids(selected)
     return render_template("multiple_users.html", res=res)
-
-
-def update_researcher_timestamp(device_id, time):
-    researcher = Researchers.query.filter(Researchers.phone_id == device_id).first()
-    researcher.last_updated = time
-    commit_and_flush(researcher)
-
-
-def insert_location_point_in_db(device_id, latitude, longitude, timestamp):
-    lp = LocationPoints(phone_id=device_id, latitude=latitude, longitude=longitude, timestamp=timestamp)
-    commit_and_flush(lp)
-
-
-def insert_or_update_existing_researcher(device_id, name, surname):
-    researcher = Researchers.query.filter(Researchers.phone_id == device_id).first()
-    if not researcher:
-        researcher = Researchers(phone_id=device_id, name=name, surname=surname)
-    else:
-        researcher.name = name
-        researcher.surname = surname
-    commit_and_flush(researcher)
-
-
-def commit_and_flush(r):
-    db.session.add(r)
-    db.session.commit()
-    db.session.flush()
-
-
-def get_all_researchers_from_db():
-    result = Researchers.query.all()
-    return result
-
-
-def get_distinct_phone_ids_from_db():
-    res = db.session.query(LocationPoints).distinct(LocationPoints.phone_id)
-    result_list = list()
-    for val in res:
-        result_list.append(val.phone_id)
-    return result_list
-
-
-def get_location_points_with_id(phone_id):
-    loc_points = LocationPoints.query.filter(LocationPoints.phone_id == phone_id).all()
-    return loc_points
-
-
-def get_entries_with_phone_id(device_id):
-    locations = get_location_points_with_id(device_id)
-    serialized_locations = [i.serialize for i in locations]
-    return serialized_locations
-
-
-def get_filtered_entries_from_db(device_id, start_unix_time, end_unix_time):
-    start_time = datetime.now().fromtimestamp(float(start_unix_time))
-    end_time = datetime.now().fromtimestamp(float(end_unix_time))
-    query = and_(LocationPoints.timestamp >= start_time,
-                 LocationPoints.timestamp < end_time,
-                 LocationPoints.phone_id == device_id)
-    locations = LocationPoints.query.filter(query).all()
-    serialized_locations = [i.serialize for i in locations]
-    return serialized_locations
 
 
 if __name__ == '__main__':
