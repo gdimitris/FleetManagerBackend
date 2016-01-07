@@ -69,7 +69,7 @@ function clear_search(){
 </script>
 
 <script>
-    var selected_checkboxes=0;
+    var selected_checkboxes;
     function count_selected(checkbox){
         if(checkbox.checked)
             selected_checkboxes++;
@@ -89,7 +89,19 @@ function clear_search(){
     function updateText(){
         $('#user-form-text').html("You have selected "+selected_checkboxes+" users");
     }
-    updateText();
+
+
+    function deselectAllCheckboxes(){
+        $('input:checkbox').removeAttr('checked');
+        selected_checkboxes = 0;
+    }
+
+    function initialize(){
+        deselectAllCheckboxes();
+        updateText();
+    }
+
+    initialize();
 </script>
 
 {% endblock %}

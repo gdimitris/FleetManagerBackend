@@ -1,8 +1,6 @@
 import os
 from datetime import datetime
-
 from flask import render_template, request, jsonify, send_from_directory, url_for
-
 from Application import app, db
 from Application.db_operations import update_researcher_timestamp, insert_location_point_in_db, \
     insert_or_update_existing_researcher, get_all_researchers_from_db, get_entries_with_phone_id, \
@@ -30,7 +28,7 @@ def unhandled_exception(e):
     db.session.rollback()
     message = "Unhandled exception: %s" % e
     app.logger.error(message)
-    return render_template('error.html', message), 500
+    return render_template('error.html', message=message), 500
 
 
 @app.route('/content/current_version.apk', methods=['GET'])
@@ -94,9 +92,10 @@ def register_researcher(device_id):
 @app.route('/multiselect_users', methods=['POST'])
 def multiselect_users():
     selected = request.form.getlist('check')
-    print selected
+    print "Selected researchers: %s" % len(selected)
     res = get_locations_for_phone_ids(selected)
-    return render_template("multiple_users.html", res=res)
+    entries = jsonify(locations=res)
+    return render_template("multiple_users.html", result=entries.data)
 
 
 if __name__ == '__main__':

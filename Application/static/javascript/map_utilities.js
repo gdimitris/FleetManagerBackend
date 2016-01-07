@@ -42,7 +42,6 @@ function updateProgressBar(){
     var w = parseInt(bar.style.width);
     w += 1;
     bar.style.width = w + "%";
-//    bar.textContent = w + "%";
     if (w > 99) {
         hideProgressBar();
     }
@@ -60,11 +59,21 @@ function requestLocationsForDeviceID(device_id){
     var request_url = "/json/"+device_id;
     $.get(request_url, function (response){
         locations = response.result;
-        console.log('Total locations: '+locations.length)
-        showProgressBar();
-        createPartitionsForArray(locations, map)
-        $.long_running_queue.add(partial(drawPolyline, polylinePath, map));
+        createLocationsInMap(locations);
     });
+}
+
+function createLocationsInMap(locations){
+    console.log('Total locations: '+locations.length)
+    showProgressBar();
+    createPartitionsForArray(locations, map)
+    $.long_running_queue.add(partial(drawPolyline, polylinePath, map));
+}
+
+function createUnconnectedLocationsInMap(locations){
+    console.log('Total locations: '+locations.length)
+    showProgressBar();
+    createPartitionsForArray(locations, map)
 }
 
 function drawPolyline(path,the_map){

@@ -68,4 +68,6 @@ def get_filtered_entries_from_db(device_id, start_unix_time, end_unix_time):
 
 def get_locations_for_phone_ids(selected_phone_ids):
     q = LocationPoints.phone_id.in_(selected_phone_ids)
-    return LocationPoints.query.filter(q).all()
+    locations = LocationPoints.query.filter(q).all()
+    serialized_locations = [i.serialize for i in locations]
+    return serialized_locations

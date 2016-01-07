@@ -16,29 +16,7 @@
         <button onclick="hideMarkers();" type="submit" class="btn btn-default col-md-3">Hide Markers</button>
         <button onclick="showMarkers(map);" type="submit" class="btn btn-default col-md-3">Show Markers</button>
         <button onclick="deleteMarkers();" type="submit" class="btn btn-default col-md-3">Delete Markers</button>
-        <button onclick="highlightLastMarker();" type="submit" class="btn btn-default col-md-3">Show Last Position</button>
-    </div>
-
-    <div class="row" id="filter-container">
-        <div class="col-md-6">
-            <div class='input-group date' id='start_picker'>
-                <input type='text' class="form-control" />
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-            </div>
-        </div>
-
-
-        <div class="col-md-6">
-            <div class='input-group date' id='end_picker'>
-                <input type='text' class="form-control" />
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-            </div>
-        </div>
-        <button onclick="filterResults('{{ device_id | safe()}}');" type="submit" class="btn btn-default">Filter</button>
+        <button onclick="highlightLastMarker();" type="submit" class="btn btn-default col-md-3" disabled>Show Last Position</button>
     </div>
 </div>
 
@@ -100,24 +78,12 @@
         map.fitBounds(bounds);
 
       });
-
-      requestLocationsForDeviceID(device_id);
+        var locs = {{ result | safe() }};
+        console.log(locs.locations);
+      createUnconnectedLocationsInMap(locs.locations);
     }
 </script>
 <script type="text/javascript">
-    $(function () {
-        $('#start_picker').datetimepicker();
-        $('#end_picker').datetimepicker({
-            useCurrent: false //Important! See issue #1075
-        });
-        $("#start_picker").on("dp.change", function (e) {
-            $('#end_picker').data("DateTimePicker").minDate(e.date);
-        });
-        $("#end_picker").on("dp.change", function (e) {
-            $('#start_picker').data("DateTimePicker").maxDate(e.date);
-        });
-    });
-
     $('#toggler').click(function(){
         $('#floating-panel').slideToggle();
         $('#chevron-up').toggle();
