@@ -33,7 +33,7 @@
                             <td> {{ researcher.name }}</td>
                             <td> {{ researcher.surname }}</td>
                             {% if researcher.last_updated: %}
-                                <td> <script> document.write(moment('{{ researcher.last_updated}}').fromNow()); </script> </td>
+                                <td> <script> document.write(moment.utc('{{ researcher.last_updated}}').zone(120).fromNow()); </script> </td>
                             {% else: %}
                                 <td> {{researcher.last_updated}} </td>
                             {% endif %}
