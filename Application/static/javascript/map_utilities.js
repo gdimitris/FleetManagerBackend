@@ -7,7 +7,7 @@ var bar = document.getElementById('locations-bar');
 var barContainer = document.getElementById('barContainer')
 
 function addInfoWindow(marker, location){
-    var contentStr = '<div>' + location.timestamp + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
+    var contentStr = '<div>' + new Date(location.timestamp) + '</div>' + '<div>' + location.latitude + ',' + location.longitude + '</div>'
     var infoWindow = new google.maps.InfoWindow({
         content: contentStr
     });

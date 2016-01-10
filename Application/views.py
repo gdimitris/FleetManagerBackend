@@ -91,7 +91,8 @@ def register_researcher(device_id):
 
 @app.route('/multiselect_users', methods=['POST'])
 def multiselect_users():
-    selected = request.form.getlist('check')
+    selected = request.form.getlist("check")
+    print "Result: %s" % selected
     print "Selected researchers: %s" % len(selected)
     res = get_locations_for_phone_ids(selected)
     entries = jsonify(locations=res)
