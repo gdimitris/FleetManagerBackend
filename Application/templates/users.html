@@ -12,14 +12,13 @@
 
 {% if researchers: %}
 <form id="user-form" method="post" action="/multiselect_users">
-<div class="row" style="margin-bottom:5px;" hidden>
-    <p class="col-md-2" id="user-form-text"> </p><button id="users-form-button" onclick="clear_search();" class="btn btn-default col-md-1" style="height:35px;" disabled>Submit</button>
+<div class="row" style="margin-bottom:5px;">
+    <p class="col-md-2" id="user-form-text"> </p><button id="users-form-button" onclick="submitForm();" class="btn btn-default col-md-1" style="height:35px;" disabled>Submit</button>
 </div>
     <div class="panel panel-default">
         <div class="panel-heading"><b>Researchers</b></div>
             <table class="table table-striped" id="user-table">
                 <thead>
-                    <!--<th hidden>Selected</th>-->
                     <th>Device ID</th>
                     <th>First Name</th>
                     <th>Last Name</th>
@@ -28,8 +27,7 @@
                 <tbody>
                     {% for researcher in researchers: %}
                         <tr>
-                            <!--<td> <input type="checkbox" name="check" value="{{researcher.phone_id}}" hidden></td>-->
-                            <td> <a href="{{ url_for('show_device_locations', device_id=researcher.phone_id) }}">  {{ researcher.phone_id }}  </a> </td>
+                            <td><a href="{{ url_for('show_device_locations', device_id=researcher.phone_id) }}">{{ researcher.phone_id }}</a></td>
                             <td> {{ researcher.name }}</td>
                             <td> {{ researcher.surname }}</td>
                             {% if researcher.last_updated: %}
@@ -51,7 +49,7 @@
         user_table = $('#user-table').DataTable(
              {
                 "aoColumnDefs": [
-                  { "bSortable": false, "aTargets": [ 0 ] }
+                  { "bSortable": false, "bVisible" : true ,"aTargets": [ 0 ] }
                 ]
              }
         );
@@ -60,7 +58,6 @@
         $('#user-table tbody').on( 'click', 'tr', function () {
             $(this).toggleClass('info');
             var num_selected = user_table.rows(' .info').data().length;
-            console.log($(this).children("input"));
             updateText(num_selected);
             toggleButton(num_selected);
         } );
@@ -72,14 +69,26 @@
 
 <script>
     function toggleButton(selected_checkboxes){
-        if(selected_checkboxes<1)
-            $('#users-form-button').prop('disabled', true);
-        else
-            $('#users-form-button').prop('disabled', false);
+        var shouldBeEnabled = selected_checkboxes<1 ;
+        $('#users-form-button').prop('disabled', shouldBeEnabled);
     }
 
     function updateText(selected){
         $('#user-form-text').html("You have selected "+selected+" users");
+    }
+
+    function submitForm(){
+        var selected_ids = $.map(user_table.rows(' .info').data(), function(item){
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(item[0], "text/xml");
+            var id = doc.firstChild.firstChild.data;
+
+            var input = $("<input>").attr("type", "hidden").attr("name", "check").val(id);
+            $('#user-form').append($(input));
+            return id;
+
+        });
+        console.log(selected_ids);
     }
 
 
