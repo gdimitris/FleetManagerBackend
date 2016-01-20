@@ -1,3 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 fleet_manager.db
 tmp/*
+*.pyc
