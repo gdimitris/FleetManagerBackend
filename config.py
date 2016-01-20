@@ -10,7 +10,7 @@ PREFERRED_URL_SCHEME = 'https'
 
 #SqlAlchemy Configuration
 
-#params = urllib.quote_plus("DRIVER={SQL Server Native Client 10.0};SERVER=SCYLLA\SQLEXPRESS;DATABASE=testfm;UID=EnviousCreep;PWD=2dash+1@")
+#params = urllib.quote_plus("DRIVER={SQL Server Native Client 10.0};SERVER=SCYLLA\SQLEXPRESS;DATABASE=testfm;UID=EnviousCreep;PWD=1234")
 env_server_name = os.environ.get('SERVERNAME')
 env_database = os.environ.get('DATABASENAME')
 env_username = os.environ.get('FLEETUSERNAME')
