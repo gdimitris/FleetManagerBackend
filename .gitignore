@@ -2,3 +2,4 @@
 fleet_manager.db
 tmp/*
 *.pyc
+config.py
